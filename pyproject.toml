@@ -9,7 +9,7 @@ description = "Finds shortest of bonds in the system"
 keywords = ["ovito", "ovito-extension"]
 authors = [{name = "Daniel Utt", email = "utt@ovito.org"}]
 maintainers = [{name = "Daniel Utt", email = "utt@ovito.org"}]
-license = {text = "GPLv3", file = "LICENSE"}
+license = {text = "GPLv3"}
 readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
