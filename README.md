@@ -1,5 +1,5 @@
 # Ring finder
-Finds shortest of bonds in the system
+Finds shortest rings formed by bonds in the system
 
 ## Description
 The modifier outputs:
