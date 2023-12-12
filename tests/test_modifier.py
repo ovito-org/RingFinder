@@ -1,9 +1,10 @@
+from pathlib import Path
+
+import numpy as np
 import pytest
 from ovito.io import import_file
 from ovito.modifiers import ShrinkWrapSimulationBoxFunction
 from RingFinder import RingFinder
-import numpy as np
-from pathlib import Path
 
 
 @pytest.fixture()
@@ -49,7 +50,10 @@ def test_global_attributes(setup_data):
 
 def test_ring_sizes_tables(setup_data):
     data = setup_data
-    ref = np.array(((5, 13), (6, 10)), dtype=int)
+    ref = np.zeros((7, 2))
+    ref[4, 1] = 13
+    ref[5, 1] = 10
+    ref[:, 0] = np.arange(7)
     assert np.all(data.tables["RingSizes"].xy() == ref)
 
 
