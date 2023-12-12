@@ -292,6 +292,11 @@ class RingFinder(ModifierInterface):
         return ""
 
     def modify(self, data: DataCollection, **kwargs):
+        if self.min_size > self.max_size:
+            raise RuntimeError(
+                f"Minimum ring size ({self.min_size}) must be smaller than maximum ring size ({self.max_size})."
+            )
+
         rings = []
         targets_bfs = targets = range(data.particles.count)
 
