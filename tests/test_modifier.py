@@ -51,8 +51,8 @@ def test_global_attributes(setup_data):
 def test_ring_sizes_tables(setup_data):
     data = setup_data
     ref = np.zeros((7, 2))
-    ref[4, 1] = 13
-    ref[5, 1] = 10
+    ref[5, 1] = 13
+    ref[6, 1] = 10
     ref[:, 0] = np.arange(7)
     assert np.all(data.tables["RingSizes"].xy() == ref)
 
