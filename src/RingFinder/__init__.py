@@ -222,7 +222,7 @@ class RingFinder(ModifierInterface):
             assert i == len(faces)
 
         mesh = data.surfaces.create(
-            identifier=f"ring_mesh{suffix}",
+            identifier=f"RingMesh{suffix}",
             title=f"RingMesh{suffix}",
             domain=data.cell,
             vis=self.mesh_vis,
@@ -262,7 +262,7 @@ class RingFinder(ModifierInterface):
 
         # Ring size histogram
         table = data.tables.create(
-            identifier=f"ring_size_histogram{suffix}",
+            identifier=f"RingSizes{suffix}",
             plot_mode=DataTable.PlotMode.BarChart,
             title=f"RingSizes{suffix}",
         )
@@ -282,13 +282,13 @@ class RingFinder(ModifierInterface):
             if key.startswith("RingCount"):
                 key = key.split(".")
                 if len(key) == 1:
-                    max_count = 1
+                    max_count = 0
                 else:
-                    count = int(key)[-1]
+                    count = int(key[-1])
                     if count > max_count:
                         max_count = count
         if max_count != -1:
-            return f".{max_count}"
+            return f".{max_count+1}"
         return ""
 
     def modify(self, data: DataCollection, **kwargs):
