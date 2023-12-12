@@ -247,7 +247,7 @@ class RingFinder(ModifierInterface):
             data.attributes[key] = len(value)
 
         # Create data tables
-        counts = np.zeros(len(range(self.min_size, self.max_size + 1)))
+        counts = np.zeros(len(range(0, self.max_size + 1)))
         for i in range(self.min_size, self.max_size + 1):
             key = f"{i}-RingCount{suffix}"
             if key not in rings_dict or len(rings_dict[key]) == 0:
@@ -258,7 +258,7 @@ class RingFinder(ModifierInterface):
                 plot_mode=DataTable.PlotMode.NoPlot,
             )
             table.x = table.create_property("Particle Indices", data=rings_dict[key])
-            counts[i - self.min_size] = len(rings_dict[key])
+            counts[i] = len(rings_dict[key])
 
         # Ring size histogram
         table = data.tables.create(
@@ -267,10 +267,10 @@ class RingFinder(ModifierInterface):
             title=f"RingSizes{suffix}",
         )
         table.x = table.create_property(
-            "Ring Size", data=[i for i in range(self.min_size, self.max_size + 1)]
+            "Ring Size", data=[i for i in range(0, self.max_size + 1)]
         )
         for i in range(self.min_size, self.max_size + 1):
-            table.x.add_type_id(i - self.min_size, table, name=f"{i}")
+            table.x.add_type_id(i, table, name=f"{i}")
         table.y = table.create_property(
             "Counts",
             data=counts,
