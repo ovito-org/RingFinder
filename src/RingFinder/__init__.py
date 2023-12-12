@@ -10,7 +10,6 @@ from ovito.traits import OvitoObjectTrait
 from ovito.vis import SurfaceMeshVis
 from traits.api import Bool, Int
 
-# from ovito.modifiers import ExpandSelectionModifier
 from .TriangulateRing import triangulate
 
 
@@ -19,7 +18,6 @@ class RingFinder(ModifierInterface):
     max_size = Int(10, label="Maximum ring size")
     mesh_vis = OvitoObjectTrait(SurfaceMeshVis)
     create_mesh = Bool(True, label="Create mesh")
-    # only_selected = Bool(False, label="Apply to selection only")
     triangulate_facets = Bool(False, label="Triangulate facets")
 
     def bfs(self, data, start):
@@ -249,7 +247,7 @@ class RingFinder(ModifierInterface):
         # Create data tables
         counts = np.zeros(len(range(self.min_size, self.max_size + 1)))
         for i in range(self.min_size, self.max_size + 1):
-            key = f"{i}-Rings{suffix}"
+            key = f"{i}-RingCount{suffix}"
             if key not in rings_dict or len(rings_dict[key]) == 0:
                 continue
             table = data.tables.create(
@@ -293,19 +291,6 @@ class RingFinder(ModifierInterface):
 
     def modify(self, data: DataCollection, **kwargs):
         rings = []
-        # if self.only_selected:
-        # targets = np.where(data.particles["Selection"])[0]
-        # data.apply(
-        #     ExpandSelectionModifier(
-        #         mode=ExpandSelectionModifier.ExpansionMode.Bonded,
-        #         iterations=self.max_size,
-        #     )
-        # )
-        # targets_bfs = np.where(data.particles["Selection"])[0]
-        # data.particles_["Selection_"][:] = 0
-        # data.particles_["Selection_"][targets] = 1
-        # else:
-        # targets_bfs = targets = range(data.particles.count)
         targets_bfs = targets = range(data.particles.count)
 
         labels = {}
