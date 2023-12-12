@@ -181,6 +181,8 @@ class RingFinder(ModifierInterface):
             for r in ring:
                 uni.add(r)
         uni = np.asarray(list(uni))
+        if len(uni) == 0:
+            return
         uni.sort()
 
         positions = data.particles["Position"][uni]
