@@ -19,6 +19,14 @@ The modifier outputs:
 - `triangulate_facets` / "Triangulate facets": Triangulate facets using a different algorithm. Slower than the default algorithm used in OVITO, but can lead to better results for concave rings / polygons.
 - `mesh_vis` / "SurfaceMeshVis": Visual element used for the output meshes.  
 
+| GUI name                                                                                                                                | Python name          | Description                                                                                                                                                   | Default Value |
+|-----------------------------------------------------------------------------------------------------------------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| **Minimum ring size**                                                                                                                   | `min_size`           | Minimum size of the rings found by the modifier.                                                                                                              | `3`           |
+| **Maximum ring size**                                                                                                                   | `max_size`           | Maximum size of the rings found by the modifier.                                                                                                              | `10`          |
+| **Create mesh**                                                                                                                         | `create_mesh`        | Output meshes for each ring.                                                                                                                                  | `True`        |
+| **Triangulate facets**                                                                                                                  | `triangulate_facets` | Triangulate facets using a different algorithm. Slower than the default algorithm used in OVITO, but can lead to better results for concave rings / polygons. | `False`       |
+| **[Surface Mesh Vis](https://www.ovito.org/manual/reference/pipelines/visual_elements/surface_mesh.html#visual-elements-surface-mesh)** | `mesh_vis`           | Visual element used for the output meshes.                                                                                                                    |               |
+
 ## Example
 
 ![Example 01](examples/example_01.png)
