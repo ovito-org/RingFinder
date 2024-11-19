@@ -13,11 +13,6 @@ The modifier outputs:
     - "Ring Mesh": If selected contains the surface meshes visualizing the rings.
 
 ## Parameters 
-- `min_size` / "Minimum ring size": Minimum size of the rings found by the modifier.
-- `max_size` / "Maximum ring size": Maximum size of the rings found by the modifier.
-- `create_mesh` / "Create mesh": Output meshes for each ring.
-- `triangulate_facets` / "Triangulate facets": Triangulate facets using a different algorithm. Slower than the default algorithm used in OVITO, but can lead to better results for concave rings / polygons.
-- `mesh_vis` / "SurfaceMeshVis": Visual element used for the output meshes.  
 
 | GUI name                                                                                                                                | Python name          | Description                                                                                                                                                   | Default Value |
 |-----------------------------------------------------------------------------------------------------------------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
