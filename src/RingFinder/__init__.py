@@ -30,7 +30,7 @@ class RingFinder(ModifierInterface):
         labels[start] = [start, 0, 1]
         q.append(start)
 
-        max_iter = 1000
+        max_iter = 10000
         loop = 0
         while q:
             v = q.popleft()
@@ -98,7 +98,7 @@ class RingFinder(ModifierInterface):
     @staticmethod
     def done_atom_on_path(labels, start, atom):
         parent = labels[start][atom][0]
-        maxiter = 100
+        maxiter = 1000
         loop = 0
         while parent != labels[start][parent][0]:
             if parent < start:
@@ -118,7 +118,7 @@ class RingFinder(ModifierInterface):
         q = deque()
         q.append(start)
         rings = []
-        max_iter = 1000
+        max_iter = 10000
         loop = 0
         while q:
             v = q.popleft()

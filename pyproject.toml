@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "RingFinder"
-version = "2025.0"
+version = "2025.1"
 description = "Finds shortest of bonds in the system"
 keywords = ["ovito", "ovito-extension"]
 authors = [{name = "Daniel Utt", email = "utt@ovito.org"}]
