@@ -304,21 +304,23 @@ class RingFinder(ModifierInterface):
             raise RuntimeError("Input data doesn't contain any particles.")
         if not data.particles.bonds:
             raise RuntimeError("Input data doesn't contain any bonds. Rings cannot be found without any bonds defined. Please add a Create Bonds modifier to your pipeline before the RingFinder modifier or import a model containing chemical bonds.")
-        yield 'Ring search'
 
         rings = []
         targets_bfs = targets = range(data.particles.count)
 
         labels = {}
+        yield 'Ring search (BFS step)'
         for i, start in enumerate(targets_bfs):
             labels[start] = self.bfs(data, start)
             yield i / len(targets_bfs)
 
+        yield 'Ring search (find step)'
         for i, start in enumerate(targets):
             rings += self.find_rings(data, labels, start)
             yield i / len(targets)
 
         if self.create_mesh:
+            yield 'Ring search (meshing step)'
             yield from self.prepare_mesh(data, rings)
 
         self.create_tables_attributes(data, rings)
