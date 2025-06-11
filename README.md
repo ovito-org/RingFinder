@@ -1,51 +1,58 @@
-# Ring finder
-Finds shortest rings formed by bonds in the system
+# Ring Finder
+
+This modifier for OVITO finds closed rings formed by bonds, counts them, and visualizes them as polygonal facets.
+It only identifies rings whose sizes fall within a specified range, defined by minimum and maximum numbers of bonds.
 
 ## Description
-The modifier outputs:
-  - Global Attributes:
-    - "RingCount": Total number of rings found
-    - "*N*-RingCount": Number of *N*-sized rings found.
-  - Data Tables:
-    - "*N*-Rings": List of the particle indices making up the *N*-sized rings.
-    - "Ring Sizes": Histogram of the different ring sizes.
-  - Surfaces: 
-    - "Ring Mesh": If selected contains the surface meshes visualizing the rings.
+
+The modifier outputs the following things:
+  - Global attributes:
+    - `RingCount`: The total number of rings found.
+    - `N-RingCount`: Number of *N*-sized rings, where *N* is a number ranging from `min_size` to `max_size`.
+  - Data tables:
+    - *Ring size histogram*: Histogram of the ring sizes (absolute bin counts).
+    - *N-ring list*: List of the particle indices making up the individual *N*-sized rings, where *N* is a number ranging from `min_size` to `max_size`.
+  - Surface mesh (optional): 
+    - A visualization of the rings as polygonal facets. Each facet has a `Ring Size` property
+      that indicates the size of the ring it represents. Using the color mapping feature of the [surface mesh visual element](https://docs.ovito.org/reference/pipelines/visual_elements/surface_mesh.html#visual-elements-surface-mesh),
+      the facets can be colored according to their size.
 
 ## Parameters 
 
 | GUI name                                                                                                                                | Python name          | Description                                                                                                                                                   | Default Value |
 |-----------------------------------------------------------------------------------------------------------------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| **Minimum ring size**                                                                                                                   | `min_size`           | Minimum size of the rings found by the modifier.                                                                                                              | `3`           |
-| **Maximum ring size**                                                                                                                   | `max_size`           | Maximum size of the rings found by the modifier.                                                                                                              | `10`          |
-| **Create mesh**                                                                                                                         | `create_mesh`        | Output meshes for each ring.                                                                                                                                  | `True`        |
-| **Triangulate facets**                                                                                                                  | `triangulate_facets` | Triangulate facets using a different algorithm. Slower than the default algorithm used in OVITO, but can lead to better results for concave rings / polygons. | `False`       |
-| **[Surface Mesh Vis](https://www.ovito.org/manual/reference/pipelines/visual_elements/surface_mesh.html#visual-elements-surface-mesh)** | `mesh_vis`           | Visual element used for the output meshes.                                                                                                                    |               |
+| **Minimum ring size**                                                                                                                   | `min_size`           | Minimum size of the rings identified by the modifier.                                                                                                         | `3`           |
+| **Maximum ring size**                                                                                                                   | `max_size`           | Maximum size of the rings identified by the modifier.                                                                                                         | `10`          |
+| **Create polygons**                                                                                                                     | `create_mesh`        | Output a polygon facet for each ring.                                                                                                                         | `True`        |
+| **Triangulate facets**                                                                                                                  | `triangulate_facets` | Triangulate facets using an improved algorithm. Slower than the standard algorithm, but can provide better results for non-convex rings (see below).          | `False`       |
+| **[Surface mesh vis](https://docs.ovito.org/reference/pipelines/visual_elements/surface_mesh.html#visual-elements-surface-mesh)**       | `mesh_vis`           | Visual element controlling the appearance of the ring facets.                                                                                                 |               |
 
 ## Example
 
 ![Example 01](examples/example_01.png)
 
-Using the default mesh generation for a concave polygon (ring):
-![Example 01](examples/example_02.png)
+With the standard triangulation algorithm, non-convex rings can produce artifacts:
 
-Using the custom mesh generation for a concave polygon (ring):
-![Example 01](examples/example_03.png)
+<img src="examples/example_02.png" width="200">
+
+The improved triangulation algorithm can handle non-convex rings better, but is slower:
+
+<img src="examples/example_03.png" width="200">
 
 ## Installation
-- OVITO Pro [integrated Python interpreter](https://docs.ovito.org/python/introduction/installation.html#ovito-pro-integrated-interpreter):
-  ```
-  ovitos -m pip install --user git+https://github.com/ovito-org/RingFinder.git
-  ``` 
-  The `--user` option is recommended and [installs the package in the user's site directory](https://pip.pypa.io/en/stable/user_guide/#user-installs).
 
-- Other Python interpreters or Conda environments:
-  ```
-  pip install git+https://github.com/ovito-org/RingFinder.git
-  ```
+This modifier is included in the [OVITO Extension Directory](https://www.ovito.org/extensions/) and can be [installed via the OVITO Pro GUI](https://docs.ovito.org/advanced_topics/python_extensions.html#topics-python-extensions-gallery).
 
-## Technical information / dependencies
-- Tested on OVITO version 3.9.3
+Alternatively, you can install the modifier from the command line using the `ovitos` command line tool [that comes with OVITO Pro](https://docs.ovito.org/python/introduction/installation.html#ovito-pro-integrated-interpreter):
+```
+ovitos -m pip install --user git+https://github.com/ovito-org/RingFinder.git
+``` 
+The `--user` option is recommended and [installs the package in the user's site directory](https://pip.pypa.io/en/stable/user_guide/#user-installs).
+
+If you are using a standalone Python interpreter or a Conda environment:
+```
+pip install git+https://github.com/ovito-org/RingFinder.git
+```
 
 ## Contact
 Daniel Utt (utt@ovito.org)

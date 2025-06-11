@@ -54,7 +54,7 @@ def test_ring_sizes_tables(setup_data):
     ref[5, 1] = 13
     ref[6, 1] = 10
     ref[:, 0] = np.arange(7)
-    assert np.all(data.tables["RingSizes"].xy() == ref)
+    assert np.all(data.tables["ring-size-histogram"].xy() == ref)
 
 
 def test_ring_count_tables(setup_data):
@@ -92,8 +92,8 @@ def test_ring_count_tables(setup_data):
         ),
         dtype=int,
     )
-    sample_5 = np.asarray(data.tables["5-RingCount"]["Particle Indices"])
-    sample_6 = np.asarray(data.tables["6-RingCount"]["Particle Indices"])
+    sample_5 = np.asarray(data.tables["5-rings"]["Particle Indices"])
+    sample_6 = np.asarray(data.tables["6-rings"]["Particle Indices"])
     assert np.all(sort_2d_array(ref_5) == sort_2d_array(sample_5))
     assert np.all(sort_2d_array(ref_6) == sort_2d_array(sample_6))
 
@@ -223,7 +223,7 @@ def test_ring_mesh_vertices(setup_data):
             (14.178, -12.316, 41.817),
         ),
     )
-    sample = np.asarray(data.surfaces["RingMesh"].vertices["Position"])
+    sample = np.asarray(data.surfaces["rings"].vertices["Position"])
     assert np.all(sort_2d_array(ref) == sort_2d_array(sample))
 
 
@@ -233,11 +233,11 @@ def test_ring_mesh_faces(setup_data):
         (5, 6, 5, 5, 6, 5, 5, 6, 5, 6, 5, 6, 5, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6),
         dtype=int,
     )
-    sample = np.asarray(data.surfaces["RingMesh"].faces["RingSize"])
+    sample = np.asarray(data.surfaces["rings"].faces["Ring Size"])
     assert np.all(np.sort(ref) == np.sort(sample))
 
 
-def test_multiple_invokations(setup_pipeline):
+def test_multiple_invocations(setup_pipeline):
     pipeline = setup_pipeline
     pipeline.modifiers.append(RingFinder(min_size=5, max_size=6))
     pipeline.modifiers.append(RingFinder(min_size=5, max_size=6))
@@ -246,9 +246,9 @@ def test_multiple_invokations(setup_pipeline):
     suffix = []
     for key in data.tables.keys():
         print(key)
-        if not key.startswith("RingSizes"):
+        if not key.startswith("ring-size-histogram"):
             continue
-        if key == "RingSizes":
+        if key == "ring-size-histogram":
             suffix.append(0)
         else:
             suffix.append(int(key.split(".")[1]))

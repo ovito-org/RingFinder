@@ -1,5 +1,5 @@
 #### Ring Finder ####
-# Finds shortest of bonds in the system
+# Finds rings of bonds
 
 from collections import defaultdict, deque
 
@@ -17,8 +17,8 @@ class RingFinder(ModifierInterface):
     min_size = Int(3, label="Minimum ring size")
     max_size = Int(10, label="Maximum ring size")
     mesh_vis = OvitoObjectTrait(SurfaceMeshVis)
-    create_mesh = Bool(True, label="Create mesh")
-    triangulate_facets = Bool(False, label="Triangulate facets")
+    create_mesh = Bool(True, label="Create polygons")
+    triangulate_facets = Bool(False, label="Triangulate polygons")
 
     def bfs(self, data, start):
         bonds_enum = BondsEnumerator(data.particles.bonds)
@@ -53,7 +53,7 @@ class RingFinder(ModifierInterface):
                 q.append(neigh)
             if loop == max_iter:
                 raise RuntimeError(
-                    "Max iteration reached in bfs. This should never happen. Please report this error on github (https://github.com/ovito-org/RingFinder/issues)."
+                    "Iteration limit reached in bfs algorithm. This should never happen. Please report this error by opening an issue at https://github.com/ovito-org/RingFinder/issues."
                 )
             loop += 1
         return labels
@@ -106,7 +106,7 @@ class RingFinder(ModifierInterface):
             parent = labels[start][parent][0]
             if loop == maxiter:
                 raise RuntimeError(
-                    "Max iteration reached in path search. This should never happen. Please report this error on github (https://github.com/ovito-org/RingFinder/issues)."
+                    "Iteration limit reached in path search algorithm. This should never happen. Please report this error by opening an issue at https://github.com/ovito-org/RingFinder/issues."
                 )
             loop += 1
         return False
@@ -168,7 +168,7 @@ class RingFinder(ModifierInterface):
                 q.append(neigh)
             if loop == max_iter:
                 raise RuntimeError(
-                    "Max iteration reached in find rings. This should never happen. Please report this error on github (https://github.com/ovito-org/RingFinder/issues)."
+                    "Iteration limit reached in find rings algorithm. This should never happen. Please report this error by opening an issue at https://github.com/ovito-org/RingFinder/issues."
                 )
             loop += 1
         return rings
@@ -222,14 +222,14 @@ class RingFinder(ModifierInterface):
             assert i == len(faces)
 
         mesh = data.surfaces.create(
-            identifier=f"RingMesh{suffix}",
-            title=f"RingMesh{suffix}",
+            identifier=f"rings{suffix}",
+            title=f"Rings{suffix}",
             domain=data.cell,
             vis=self.mesh_vis,
         )
         mesh.create_vertices(positions)
         mesh.create_faces(faces)
-        mesh.faces_.create_property("RingSize", data=ring_sizes)
+        mesh.faces_.create_property("Ring Size", data=ring_sizes)
 
     def create_tables_attributes(self, data: DataCollection, rings: list):
         suffix = self.get_suffix(data)
@@ -237,40 +237,39 @@ class RingFinder(ModifierInterface):
         data.attributes[f"RingCount{suffix}"] = len(rings)
         rings_dict = {}
         for ring in rings:
-            key = f"{len(ring)}-RingCount{suffix}"
-            if key not in rings_dict:
-                rings_dict[key] = []
-            rings_dict[key].append(ring)
+            size = len(ring)
+            if size not in rings_dict:
+                rings_dict[size] = []
+            rings_dict[size].append(ring)
 
-        # Create attributes
-        for key, value in rings_dict.items():
-            data.attributes[key] = len(value)
-
-        # Create data tables
-        counts = np.zeros(len(range(0, self.max_size + 1)))
-        for i in range(self.min_size, self.max_size + 1):
-            key = f"{i}-RingCount{suffix}"
-            if key not in rings_dict or len(rings_dict[key]) == 0:
-                continue
+        # Create data tables and attributes
+        counts = np.zeros(self.max_size + 1, dtype=np.int64)
+        for size in range(self.min_size, self.max_size + 1):
+            if size in rings_dict:
+                ring_list = rings_dict[size]
+                counts[size] = len(ring_list)
+            else:
+                ring_list = None
+                counts[size] = 0
+            data.attributes[f"{size}-RingCount{suffix}"] = int(counts[size])
             table = data.tables.create(
-                identifier=key,
-                title=key,
+                identifier=f"{size}-rings{suffix}",
+                title=f"{size}-ring list{suffix}",
                 plot_mode=DataTable.PlotMode.NoPlot,
             )
-            table.x = table.create_property("Particle Indices", data=rings_dict[key])
-            counts[i] = len(rings_dict[key])
+            table.x = table.create_property("Particle Indices", data=ring_list, dtype=np.int64, components=size)
 
         # Ring size histogram
         table = data.tables.create(
-            identifier=f"RingSizes{suffix}",
+            identifier=f"ring-size-histogram{suffix}",
             plot_mode=DataTable.PlotMode.BarChart,
-            title=f"RingSizes{suffix}",
+            title=f"Ring size histogram{suffix}",
         )
         table.x = table.create_property(
             "Ring Size", data=[i for i in range(0, self.max_size + 1)]
         )
-        for i in range(self.min_size, self.max_size + 1):
-            table.x.add_type_id(i, table, name=f"{i}")
+#        for i in range(self.min_size, self.max_size + 1):
+#            table.x.add_type_id(i, table, name=f"{i}")
         table.y = table.create_property(
             "Counts",
             data=counts,
@@ -292,6 +291,10 @@ class RingFinder(ModifierInterface):
         return ""
 
     def modify(self, data: DataCollection, **kwargs):
+        if self.min_size < 0:
+            raise RuntimeError(
+                f"Minimum ring size ({self.min_size}) must be non-negative."
+            )
         if self.min_size > self.max_size:
             raise RuntimeError(
                 f"Minimum ring size ({self.min_size}) must be smaller than maximum ring size ({self.max_size})."
