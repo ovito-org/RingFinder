@@ -1,22 +1,23 @@
 #### Ring Finder ####
-# Finds rings of bonds
+# Find and visualize bond rings in a molecular structure.
+#
+# Documentation: https://github.com/ovito-org/RingFinder
 
 from collections import defaultdict, deque
 
 import numpy as np
 from ovito.data import BondsEnumerator, DataCollection, DataTable
 from ovito.pipeline import ModifierInterface
-from ovito.traits import OvitoObjectTrait
+from ovito.traits import OvitoObject
 from ovito.vis import SurfaceMeshVis
 from traits.api import Bool, Int
 
 from .TriangulateRing import triangulate
 
-
 class RingFinder(ModifierInterface):
     min_size = Int(3, label="Minimum ring size")
-    max_size = Int(10, label="Maximum ring size")
-    mesh_vis = OvitoObjectTrait(SurfaceMeshVis)
+    max_size = Int(9, label="Maximum ring size")
+    mesh_vis = OvitoObject(SurfaceMeshVis, show_cap=False, title="Rings")
     create_mesh = Bool(True, label="Create polygons")
     triangulate_facets = Bool(False, label="Triangulate polygons")
 
@@ -268,8 +269,8 @@ class RingFinder(ModifierInterface):
         table.x = table.create_property(
             "Ring Size", data=[i for i in range(0, self.max_size + 1)]
         )
-#        for i in range(self.min_size, self.max_size + 1):
-#            table.x.add_type_id(i, table, name=f"{i}")
+        for i in range(self.min_size, self.max_size + 1):
+            table.x.add_type_id(i, table, name=f"{i}").color = (1.0, 1.0, 1.0)
         table.y = table.create_property(
             "Counts",
             data=counts,
@@ -299,6 +300,11 @@ class RingFinder(ModifierInterface):
             raise RuntimeError(
                 f"Minimum ring size ({self.min_size}) must be smaller than maximum ring size ({self.max_size})."
             )
+        if not data.particles:
+            raise RuntimeError("Input data doesn't contain any particles.")
+        if not data.particles.bonds:
+            raise RuntimeError("Input data doesn't contain any bonds. Rings cannot be found without any bonds defined. Please add a Create Bonds modifier to your pipeline before the RingFinder modifier or import a model containing chemical bonds.")
+        yield 'Ring search'
 
         rings = []
         targets_bfs = targets = range(data.particles.count)
