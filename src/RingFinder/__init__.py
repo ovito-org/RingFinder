@@ -1,5 +1,5 @@
 #### Ring Finder ####
-# Find and visualize bond rings in a molecular structure.
+# Find and visualize bond rings in molecular structures.
 #
 # Documentation: https://github.com/ovito-org/RingFinder
 
