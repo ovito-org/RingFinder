@@ -76,7 +76,7 @@ class RingFinder(ModifierInterface):
             d0 = len(ring) // 2
             for i in range(d0):
                 assert ring[i] in labels
-                assert ring[i + d0] in labels
+                assert ring[i + d0] in labels[ring[i]]
                 if labels[ring[i]][ring[i + d0]][1] != d0:
                     return False
         else:
@@ -84,14 +84,14 @@ class RingFinder(ModifierInterface):
             d1 = d0 + 1
             for i in range(d0):
                 assert ring[i] in labels
-                assert ring[i + d0] in labels
-                assert ring[i + d1] in labels
+                assert ring[i + d0] in labels[ring[i]]
+                assert ring[i + d1] in labels[ring[i]]
                 if labels[ring[i]][ring[i + d0]][1] != d0:
                     return False
                 if labels[ring[i]][ring[i + d1]][1] != d0:
                     return False
             i = d0
-            assert ring[i] in labels
+            assert ring[i + d0] in labels[ring[i]]
 
             if labels[ring[i]][ring[i + d0]][1] != d0:
                 return False
