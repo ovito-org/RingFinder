@@ -9,20 +9,14 @@ from RingFinder import RingFinder
 
 @pytest.fixture()
 def setup_pipeline():
-    if Path("tests", "231D.pdb").exists():
-        pipeline = import_file(Path("tests", "231D.pdb"))
-    else:
-        pipeline = import_file("https://files.rcsb.org/download/231D.pdb")
+    pipeline = import_file(Path("examples", "231D.pdb"))
     pipeline.modifiers.append(ShrinkWrapSimulationBoxFunction)
     return pipeline
 
 
 @pytest.fixture(scope="module")
 def setup_pipeline_cache():
-    if Path("tests", "231D.pdb").exists():
-        pipeline = import_file(Path("tests", "231D.pdb"))
-    else:
-        pipeline = import_file("https://files.rcsb.org/download/231D.pdb")
+    pipeline = import_file(Path("examples", "231D.pdb"))
     pipeline.modifiers.append(ShrinkWrapSimulationBoxFunction)
     return pipeline
 
