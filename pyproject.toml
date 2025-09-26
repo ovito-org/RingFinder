@@ -9,7 +9,7 @@ description = "Finds bond rings in a molecular structure"
 keywords = ["ovito", "ovito-extension"]
 authors = [{name = "Daniel Utt", email = "utt@ovito.org"}]
 maintainers = [{name = "Daniel Utt", email = "utt@ovito.org"}, {name = "Alexander Stukowski", email = "stukowski@ovito.org"}]
-license = {text = "GPLv3"}
+license = "GPL-3.0-only"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
